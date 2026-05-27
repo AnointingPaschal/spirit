@@ -1,24 +1,5 @@
 import type { Metadata } from 'next';
-import { Syne, DM_Sans, DM_Mono } from 'next/font/google';
 import './globals.css';
-
-const syne = Syne({
-  subsets: ['latin'],
-  variable: '--font-syne',
-  weight: ['400', '500', '600', '700', '800'],
-});
-
-const dm = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-dm',
-  weight: ['300', '400', '500'],
-});
-
-const dmMono = DM_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['300', '400', '500'],
-});
 
 export const metadata: Metadata = {
   title: 'Spirit Protocol — Decentralized Multi-Chain Auth',
@@ -33,8 +14,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${dm.variable} ${dmMono.variable}`}>
-      <body className="bg-bg text-white font-body antialiased">
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="bg-bg text-white antialiased">
         {children}
       </body>
     </html>

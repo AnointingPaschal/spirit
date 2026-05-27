@@ -67,7 +67,7 @@ body {
 .btn-primary {
   background: linear-gradient(135deg, #00CFFD 0%, #0095B8 100%);
   color: #03060C;
-  font-family: var(--font-syne);
+  font-family: Syne;
   font-weight: 700;
   border-radius: 10px;
   transition: all 0.2s ease;
@@ -91,7 +91,7 @@ body {
   color: var(--ink);
   border-radius: 10px;
   transition: all 0.2s ease;
-  font-family: var(--font-syne);
+  font-family: Syne;
 }
 .btn-ghost:hover {
   border-color: #00CFFD;
@@ -104,7 +104,7 @@ body {
   background: #020810;
   border: 1px solid #0F1F35;
   border-radius: 12px;
-  font-family: var(--font-mono);
+  font-family: DM Mono;
   font-size: 13px;
   line-height: 1.7;
   overflow-x: auto;

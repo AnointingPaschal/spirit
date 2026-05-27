@@ -14,16 +14,9 @@ module.exports = {
         ink: '#8BA5C4',
       },
       fontFamily: {
-        display: ['var(--font-syne)', 'sans-serif'],
-        body: ['var(--font-dm)', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
-      },
-      backgroundImage: {
-        'grid': 'linear-gradient(rgba(0,207,253,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,207,253,0.04) 1px, transparent 1px)',
-        'grid-fade': 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,207,253,0.08) 0%, transparent 70%)',
-      },
-      backgroundSize: {
-        'grid': '48px 48px',
+        display: ['"Syne"', 'system-ui', 'sans-serif'],
+        body: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        mono: ['"DM Mono"', 'ui-monospace', 'monospace'],
       },
       animation: {
         'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
@@ -33,32 +26,16 @@ module.exports = {
         'scan': 'scan 8s linear infinite',
       },
       keyframes: {
-        'glow-pulse': {
-          '0%,100%': { opacity: '0.6' },
-          '50%': { opacity: '1' },
-        },
-        'float': {
-          '0%,100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
-        },
-        'slide-up': {
-          from: { opacity: '0', transform: 'translateY(16px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
-        'fade-in': {
-          from: { opacity: '0' },
-          to: { opacity: '1' },
-        },
-        'scan': {
-          '0%': { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(100vh)' },
-        },
+        'glow-pulse': { '0%,100%': { opacity: '0.6' }, '50%': { opacity: '1' } },
+        'float': { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-8px)' } },
+        'slide-up': { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        'fade-in': { from: { opacity: '0' }, to: { opacity: '1' } },
+        'scan': { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100vh)' } },
       },
       boxShadow: {
         'cyan': '0 0 24px rgba(0,207,253,0.25)',
         'cyan-lg': '0 0 48px rgba(0,207,253,0.2)',
         'lime': '0 0 24px rgba(179,255,89,0.2)',
-        'card': '0 1px 0 rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.02)',
       },
     },
   },
