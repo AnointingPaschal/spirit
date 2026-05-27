@@ -1,0 +1,5 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "pnpm turbo run build --filter=@spirit-protocol/demo",
+  "installCommand": "corepack enable && corepack prepare pnpm@8.15.0 --activate && pnpm install --frozen-lockfile"
+}
