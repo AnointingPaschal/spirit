@@ -87,7 +87,7 @@ abstract class EVMWalletAdapter extends BaseWalletAdapter {
     return personalSign(this.provider, message, this._address);
   }
 
-  async switchChain(chainId: number): Promise<void> {
+  override async switchChain(chainId: number): Promise<void> {
     if (!this.provider) throw new Error(`${this.name} is not connected`);
     try {
       await switchEthereumChain(this.provider, chainId);
