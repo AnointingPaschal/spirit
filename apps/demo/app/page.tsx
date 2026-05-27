@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useWallet, useSession, useChain, type WalletId, type Chain } from '@spirit-protocol/react';
+import { useWallet, useSession, useChain, type Chain } from '@spirit-protocol/react';
 import { WalletModal } from '../components/WalletModal';
 import { SessionCard } from '../components/SessionCard';
 import { ChainSelector } from '../components/ChainSelector';
 
 export default function Home() {
-  const { isConnected, isConnecting, address, connectedWalletId, error, disconnect } = useWallet();
+  const { isConnected, address, connectedWalletId, error, disconnect } = useWallet();
   const { isAuthenticated, isAuthenticating, session, authenticate } = useSession();
-  const { chain, evmChains, switchChain } = useChain();
+  const { chain, evmChains } = useChain();
 
   const [showModal, setShowModal] = useState(false);
   const [selectedChain, setSelectedChain] = useState<Chain>(evmChains[0]!);
