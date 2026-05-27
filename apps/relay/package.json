@@ -1,0 +1,38 @@
+{
+  "name": "@spirit-protocol/relay",
+  "version": "0.1.0",
+  "description": "Spirit Protocol – self-hosted relay server (Fastify + WebSocket)",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@spirit-protocol/core": "workspace:*",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/websocket": "^8.3.1",
+    "@fastify/helmet": "^11.1.1",
+    "fastify": "^4.26.2",
+    "jose": "^5.2.4",
+    "pg": "^8.11.3",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.4.5",
+    "zod": "^3.22.4",
+    "pino": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.2",
+    "@types/uuid": "^9.0.8",
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

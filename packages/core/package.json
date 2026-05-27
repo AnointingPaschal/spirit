@@ -1,0 +1,53 @@
+{
+  "name": "@spirit-protocol/core",
+  "version": "0.1.0",
+  "description": "Spirit Protocol – core wallet adapters, auth, crypto, and session management",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./chains": {
+      "import": "./dist/chains/index.mjs",
+      "require": "./dist/chains/index.js",
+      "types": "./dist/chains/index.d.ts"
+    },
+    "./wallets": {
+      "import": "./dist/wallets/index.mjs",
+      "require": "./dist/wallets/index.js",
+      "types": "./dist/wallets/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "ethers": "^6.11.1",
+    "viem": "^2.7.15",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
+    "@noble/secp256k1": "^2.0.0",
+    "@noble/hashes": "^1.3.3",
+    "bitcoinjs-lib": "^6.1.5",
+    "bs58": "^5.0.0",
+    "jose": "^5.2.4",
+    "uuid": "^9.0.1",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.8",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {},
+  "sideEffects": false,
+  "license": "MIT"
+}
