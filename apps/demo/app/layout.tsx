@@ -1,21 +1,30 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
-import { Providers } from './providers';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Spirit Protocol – Demo',
+  title: 'Spirit Protocol — Decentralized Multi-Chain Auth',
   description:
-    'Decentralized multi-chain Web3 authentication: EVM, Solana, and Bitcoin wallets. No third-party APIs.',
+    'Open-source wallet authentication for EVM, Solana, and Bitcoin. No third-party APIs. Self-hosted. Connect MetaMask, Phantom, Xverse and 9 more wallets across 9 chains.',
+  openGraph: {
+    title: 'Spirit Protocol',
+    description: 'Decentralized multi-chain Web3 authentication',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-950 text-white antialiased`}>
-        <Providers>{children}</Providers>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="bg-bg text-white antialiased">
+        {children}
       </body>
     </html>
   );

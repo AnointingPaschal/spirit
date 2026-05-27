@@ -1,7 +1,7 @@
 {
   "version": 2,
   "framework": "nextjs",
-  "buildCommand": "pnpm --filter @spirit-protocol/web build",
-  "outputDirectory": "apps/web/.next",
+  "buildCommand": "pnpm --filter @spirit-protocol/demo build",
+  "outputDirectory": "apps/demo/.next",
   "installCommand": "pnpm install --no-frozen-lockfile"
 }
