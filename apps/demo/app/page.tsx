@@ -1,15 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
-import { useWallet, useSession, useChain, type WalletId, type Chain } from '@spirit-protocol/react';
+import { useWallet, useSession, useChain, type Chain } from '@spirit-protocol/react';
 import { WalletModal } from '../components/WalletModal';
 import { SessionCard } from '../components/SessionCard';
 import { ChainSelector } from '../components/ChainSelector';
 
 export default function Home() {
-  const { isConnected, isConnecting, address, connectedWalletId, error, disconnect } = useWallet();
+  const { isConnected, address, connectedWalletId, error, disconnect } = useWallet();
   const { isAuthenticated, isAuthenticating, session, authenticate } = useSession();
-  const { chain, evmChains, switchChain } = useChain();
+  const { chain, evmChains } = useChain();
 
   const [showModal, setShowModal] = useState(false);
   const [selectedChain, setSelectedChain] = useState<Chain>(evmChains[0]!);
@@ -26,6 +27,14 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4">
       {/* Header */}
+      <div className="absolute top-6 right-6">
+        <Link
+          href="/docs"
+          className="rounded-xl border border-gray-700 px-4 py-2 text-sm text-gray-200 hover:border-sky-400 hover:text-white transition-colors"
+        >
+          Developer Docs
+        </Link>
+      </div>
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center">
