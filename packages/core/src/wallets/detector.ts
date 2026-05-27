@@ -46,15 +46,18 @@ export class WalletDetector {
    * Returns info for all known wallets, with `installed` flag.
    */
   static detectAll(): WalletInfo[] {
-    return ALL_ADAPTERS.map((adapter) => ({
-      id: adapter.id,
-      name: adapter.name,
-      icon: adapter.icon,
-      type: adapter.type,
-      installed: adapter.isInstalled(),
-      downloadUrl: DOWNLOAD_URLS[adapter.id] ?? '',
-      deepLink: DEEP_LINKS[adapter.id],
-    }));
+    return ALL_ADAPTERS.map((adapter) => {
+      const deepLink = DEEP_LINKS[adapter.id];
+      return {
+        id: adapter.id,
+        name: adapter.name,
+        icon: adapter.icon,
+        type: adapter.type,
+        installed: adapter.isInstalled(),
+        downloadUrl: DOWNLOAD_URLS[adapter.id] ?? '',
+        ...(deepLink !== undefined && { deepLink }),
+      };
+    });
   }
 
   /**
