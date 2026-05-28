@@ -68,15 +68,26 @@ function detectWallets(): DetectedWallet[] {
   const eth = window.ethereum;
   const providers = eth?.providers ?? [];
 
-  const has = (pred: (p: EVMProvider) => boolean) =>
-    pred(eth as EVMProvider) || providers.some(pred);
+  const has = (pred: (p: EVMProvider) => boolean) => {
+    try {
+      return (eth && pred(eth)) || providers.some((p) => {
+        try {
+          return p && pred(p);
+        } catch {
+          return false;
+        }
+      });
+    } catch {
+      return false;
+    }
+  };
 
   return ALL_WALLETS.map((w) => {
     let installed = false;
-    if (w.id === 'metamask')  installed = has((p) => !!p.isMetaMask && !p.isBraveWallet);
-    if (w.id === 'rabby')     installed = has((p) => !!p.isRabby);
-    if (w.id === 'coinbase')  installed = has((p) => !!p.isCoinbaseWallet) || !!window.ethereum?.isCoinbaseWallet;
-    if (w.id === 'brave')     installed = has((p) => !!p.isBraveWallet);
+    if (w.id === 'metamask')  installed = has((p) => !!p?.isMetaMask && !p?.isBraveWallet);
+    if (w.id === 'rabby')     installed = has((p) => !!p?.isRabby);
+    if (w.id === 'coinbase')  installed = has((p) => !!p?.isCoinbaseWallet) || !!window.ethereum?.isCoinbaseWallet;
+    if (w.id === 'brave')     installed = has((p) => !!p?.isBraveWallet);
     if (w.id === 'phantom')   installed = !!(window.phantom?.solana?.isPhantom || (window.solana?.isPhantom));
     if (w.id === 'solflare')  installed = !!(window.solflare?.isSolflare);
     if (w.id === 'backpack')  installed = !!(window.backpack?.solana);
@@ -534,16 +545,32 @@ function Field({ label, value, mono }: { label: string; value: string; mono?: bo
 function delay(ms: number) { return new Promise(r => setTimeout(r, ms)); }
 
 function getEVMProvider(id: string): EVMProvider | null {
-  const eth = window.ethereum;
-  if (!eth) return null;
-  const providers = eth.providers ?? [];
-  const find = (pred: (p: EVMProvider) => boolean) =>
-    providers.find(pred) ?? (pred(eth) ? eth : null);
-  if (id === 'metamask')  return find(p => !!p.isMetaMask && !p.isBraveWallet);
-  if (id === 'rabby')     return find(p => !!p.isRabby);
-  if (id === 'coinbase')  return find(p => !!p.isCoinbaseWallet);
-  if (id === 'brave')     return find(p => !!p.isBraveWallet);
-  return eth;
+  try {
+    const eth = window.ethereum;
+    if (!eth) return null;
+    const providers = eth.providers ?? [];
+    const find = (pred: (p: EVMProvider) => boolean) => {
+      try {
+        const foundProvider = providers.find((p) => {
+          try {
+            return p && pred(p);
+          } catch {
+            return false;
+          }
+        });
+        return foundProvider ?? (pred(eth) ? eth : null);
+      } catch {
+        return null;
+      }
+    };
+    if (id === 'metamask')  return find(p => !!p?.isMetaMask && !p?.isBraveWallet);
+    if (id === 'rabby')     return find(p => !!p?.isRabby);
+    if (id === 'coinbase')  return find(p => !!p?.isCoinbaseWallet);
+    if (id === 'brave')     return find(p => !!p?.isBraveWallet);
+    return eth;
+  } catch {
+    return null;
+  }
 }
 
 function getSolanaProvider(id: string) {
