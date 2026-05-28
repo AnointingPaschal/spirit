@@ -141,12 +141,16 @@ export class MetaMaskAdapter extends EVMWalletAdapter {
     'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNDcuNSAzNDcuNSI+PHBhdGggZmlsbD0iI0U4ODMxQSIgZD0iTTE3My44IDE3My44TDE3My44IDE3My44TDE3My44IDE3My44TDE3My44IDE3My44WiIvPjwvc3ZnPg==';
 
   protected findProvider(): EVMProvider | undefined {
-    return (
-      findEVMProvider((p) => p.isMetaMask === true && !p.isBraveWallet) ??
-      (typeof window !== 'undefined' && window.ethereum?.isMetaMask && !window.ethereum?.isBraveWallet
-        ? window.ethereum
-        : undefined)
-    );
+    try {
+      return (
+        findEVMProvider((p) => p.isMetaMask === true && !p.isBraveWallet) ??
+        (typeof window !== 'undefined' && window.ethereum?.isMetaMask && !window.ethereum?.isBraveWallet
+          ? window.ethereum
+          : undefined)
+      );
+    } catch {
+      return undefined;
+    }
   }
 }
 
@@ -218,12 +222,16 @@ export class BraveWalletAdapter extends EVMWalletAdapter {
   readonly icon = 'https://brave.com/static-assets/images/brave-logo-sans-text.svg';
 
   protected findProvider(): EVMProvider | undefined {
-    return (
-      findEVMProvider((p) => p.isBraveWallet === true) ??
-      (typeof window !== 'undefined' && window.ethereum?.isBraveWallet
-        ? window.ethereum
-        : undefined)
-    );
+    try {
+      return (
+        findEVMProvider((p) => p.isBraveWallet === true) ??
+        (typeof window !== 'undefined' && window.ethereum?.isBraveWallet
+          ? window.ethereum
+          : undefined)
+      );
+    } catch {
+      return undefined;
+    }
   }
 }
 

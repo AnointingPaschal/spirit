@@ -45,7 +45,8 @@ type Action =
   | { type: 'AUTH_ERROR'; error: Error }
   | { type: 'CHAIN_CHANGED'; chain: Chain }
   | { type: 'ADDRESS_CHANGED'; address: string }
-  | { type: 'CLEAR_ERROR' };
+  | { type: 'CLEAR_ERROR' }
+  | { type: 'INIT_WALLETS'; wallets: WalletInfo[] };
 
 const initialState: SpiritState = {
   wallets: [],
@@ -109,6 +110,9 @@ function reducer(state: SpiritState, action: Action): SpiritState {
     case 'CLEAR_ERROR':
       return { ...state, error: null };
 
+    case 'INIT_WALLETS':
+      return { ...state, wallets: action.wallets };
+
     default:
       return state;
   }
@@ -137,26 +141,30 @@ export interface SpiritProviderProps {
 export function SpiritProvider({ config, children }: SpiritProviderProps) {
   const sdk = useMemo(() => createSpirit(config), []);
 
-  const [state, dispatch] = useReducer(reducer, {
-    ...initialState,
-    wallets: WalletDetector.detectAll(),
-    session: sdk.getSession(),
-    isAuthenticated: sdk.isAuthenticated(),
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Restore address if session exists
+  // Initialize wallets and restore session on client mount
   useEffect(() => {
-    const session = sdk.getSession();
-    if (session) {
-      dispatch({
-        type: 'CONNECT_SUCCESS',
-        walletId: session.walletId,
-        address: session.address,
-        chain: session.chain,
-      });
-      dispatch({ type: 'AUTH_SUCCESS', session });
+    try {
+      // Detect available wallets on client side
+      const detectedWallets = WalletDetector.detectAll();
+      dispatch({ type: 'INIT_WALLETS', wallets: detectedWallets });
+
+      // Restore session if exists
+      const session = sdk.getSession();
+      if (session) {
+        dispatch({
+          type: 'CONNECT_SUCCESS',
+          walletId: session.walletId,
+          address: session.address,
+          chain: session.chain,
+        });
+        dispatch({ type: 'AUTH_SUCCESS', session });
+      }
+    } catch {
+      // Silently fail wallet detection on error
     }
-  }, []);
+  }, [sdk]);
 
   const connect = useCallback(
     async (walletId: WalletId, chain?: Chain): Promise<ConnectResult> => {

@@ -15,10 +15,20 @@ export function findEVMProvider(
 
   // Some wallets inject into window.ethereum.providers[]
   if (ethereum.providers && Array.isArray(ethereum.providers)) {
-    return ethereum.providers.find(predicate);
+    return ethereum.providers.find((p) => {
+      try {
+        return p && predicate(p);
+      } catch {
+        return false;
+      }
+    });
   }
 
-  return predicate(ethereum) ? ethereum : undefined;
+  try {
+    return predicate(ethereum) ? ethereum : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**
