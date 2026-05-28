@@ -143,7 +143,7 @@ export class MetaMaskAdapter extends EVMWalletAdapter {
   protected findProvider(): EVMProvider | undefined {
     return (
       findEVMProvider((p) => p.isMetaMask === true && !p.isBraveWallet) ??
-      (typeof window !== 'undefined' && window.ethereum?.isMetaMask && !window.ethereum.isBraveWallet
+      (typeof window !== 'undefined' && window.ethereum?.isMetaMask && !window.ethereum?.isBraveWallet
         ? window.ethereum
         : undefined)
     );
