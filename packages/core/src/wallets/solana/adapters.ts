@@ -77,8 +77,12 @@ export class PhantomAdapter extends SolanaWalletAdapter {
   readonly icon = 'https://phantom.app/img/phantom-logo.svg';
 
   protected findProvider(): SolanaProvider | undefined {
-    if (typeof window === 'undefined') return undefined;
-    return window.phantom?.solana ?? window.solana?.isPhantom ? window.solana : undefined;
+    try {
+      if (typeof window === 'undefined') return undefined;
+      return window.phantom?.solana ?? (window.solana?.isPhantom ? window.solana : undefined);
+    } catch {
+      return undefined;
+    }
   }
 }
 
@@ -90,8 +94,12 @@ export class SolflareAdapter extends SolanaWalletAdapter {
   readonly icon = 'https://solflare.com/assets/logo.svg';
 
   protected findProvider(): SolanaProvider | undefined {
-    if (typeof window === 'undefined') return undefined;
-    return window.solflare?.isSolflare ? window.solflare : undefined;
+    try {
+      if (typeof window === 'undefined') return undefined;
+      return window.solflare?.isSolflare ? window.solflare : undefined;
+    } catch {
+      return undefined;
+    }
   }
 }
 
@@ -103,8 +111,12 @@ export class BackpackAdapter extends SolanaWalletAdapter {
   readonly icon = 'https://backpack.app/icon.png';
 
   protected findProvider(): SolanaProvider | undefined {
-    if (typeof window === 'undefined') return undefined;
-    return window.backpack?.solana ?? undefined;
+    try {
+      if (typeof window === 'undefined') return undefined;
+      return window.backpack?.solana ?? undefined;
+    } catch {
+      return undefined;
+    }
   }
 }
 

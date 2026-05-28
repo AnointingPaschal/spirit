@@ -65,11 +65,15 @@ export class XverseAdapter extends BaseWalletAdapter {
   readonly type = 'bitcoin' as const;
 
   isInstalled(): boolean {
-    return (
-      typeof window !== 'undefined' &&
-      (window.XverseProviders?.BitcoinProvider !== undefined ||
-        window.xfi?.bitcoin !== undefined)
-    );
+    try {
+      return (
+        typeof window !== 'undefined' &&
+        (window.XverseProviders?.BitcoinProvider !== undefined ||
+          window.xfi?.bitcoin !== undefined)
+      );
+    } catch {
+      return false;
+    }
   }
 
   async connect(chain: Chain): Promise<ConnectResult> {
@@ -129,7 +133,11 @@ export class LeatherAdapter extends BaseWalletAdapter {
   readonly type = 'bitcoin' as const;
 
   isInstalled(): boolean {
-    return typeof window !== 'undefined' && window.LeatherProvider !== undefined;
+    try {
+      return typeof window !== 'undefined' && window.LeatherProvider !== undefined;
+    } catch {
+      return false;
+    }
   }
 
   async connect(chain: Chain): Promise<ConnectResult> {
