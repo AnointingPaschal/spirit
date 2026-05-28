@@ -2,8 +2,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+interface NavbarProps {
+  onConnectClick?: () => void;
+}
+
+export function Navbar({ onConnectClick }: NavbarProps) {
+  const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -36,10 +40,10 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-1">
           {[
             { href: '/#features', label: 'Features' },
-            { href: '/docs', label: 'Docs' },
-            { href: '/demo', label: 'Demo' },
-            { href: '/#wallets', label: 'Wallets' },
-          ].map((link) => (
+            { href: '/docs',      label: 'Docs' },
+            { href: '/demo',      label: 'Demo' },
+            { href: '/#wallets',  label: 'Wallets' },
+          ].map(link => (
             <Link
               key={link.href}
               href={link.href}
@@ -50,7 +54,7 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* CTA */}
+        {/* CTAs */}
         <div className="hidden md:flex items-center gap-3">
           <a
             href="https://github.com/AnointingPaschal/spirit"
@@ -63,9 +67,15 @@ export function Navbar() {
             </svg>
             GitHub
           </a>
-          <Link href="/demo" className="btn-primary px-4 py-2 text-sm">
-            Try Demo →
-          </Link>
+          {onConnectClick ? (
+            <button onClick={onConnectClick} className="btn-primary px-4 py-2 text-sm">
+              Connect Wallet →
+            </button>
+          ) : (
+            <Link href="/demo" className="btn-primary px-4 py-2 text-sm">
+              Try Demo →
+            </Link>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -86,10 +96,10 @@ export function Navbar() {
         <div className="md:hidden bg-surface/95 backdrop-blur-xl border-b border-[#0F1F35] px-6 py-4 space-y-1">
           {[
             { href: '/#features', label: 'Features' },
-            { href: '/docs', label: 'Docs' },
-            { href: '/demo', label: 'Demo' },
-            { href: '/#wallets', label: 'Wallets' },
-          ].map((link) => (
+            { href: '/docs',      label: 'Docs' },
+            { href: '/demo',      label: 'Demo' },
+            { href: '/#wallets',  label: 'Wallets' },
+          ].map(link => (
             <Link
               key={link.href}
               href={link.href}
@@ -99,10 +109,19 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="pt-2 flex gap-2">
-            <Link href="/demo" className="btn-primary px-4 py-2 text-sm flex-1 text-center">
-              Try Demo
-            </Link>
+          <div className="pt-2">
+            {onConnectClick ? (
+              <button
+                onClick={() => { setMobileOpen(false); onConnectClick(); }}
+                className="btn-primary w-full px-4 py-2.5 text-sm text-center"
+              >
+                Connect Wallet
+              </button>
+            ) : (
+              <Link href="/demo" className="btn-primary px-4 py-2.5 text-sm block text-center">
+                Try Demo
+              </Link>
+            )}
           </div>
         </div>
       )}

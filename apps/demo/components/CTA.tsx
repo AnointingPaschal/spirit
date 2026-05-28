@@ -1,9 +1,13 @@
+'use client';
 import Link from 'next/link';
 
-export function CTA() {
+interface CTAProps {
+  onConnectClick: () => void;
+}
+
+export function CTA({ onConnectClick }: CTAProps) {
   return (
     <section className="py-24 relative overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 grid-bg opacity-40" />
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-cyan/6 blur-[120px] rounded-full" />
@@ -26,12 +30,15 @@ export function CTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link href="/demo" className="btn-primary px-8 py-4 text-base inline-flex items-center justify-center gap-2">
+          <button
+            onClick={onConnectClick}
+            className="btn-primary px-8 py-4 text-base inline-flex items-center justify-center gap-2"
+          >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
-            Try the live demo
-          </Link>
+            Connect your wallet
+          </button>
           <Link href="/docs" className="btn-ghost px-8 py-4 text-base inline-flex items-center justify-center gap-2">
             Read the docs
           </Link>
@@ -48,7 +55,6 @@ export function CTA() {
           </a>
         </div>
 
-        {/* Terminal snippet */}
         <div className="inline-block text-left bg-[#020810] border border-[#0F1F35] rounded-xl p-5 font-mono text-sm">
           <div className="flex gap-2 mb-4">
             <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
@@ -59,7 +65,7 @@ export function CTA() {
             <div><span className="text-muted">$</span> <span className="text-lime">git clone</span> <span className="text-white">https://github.com/AnointingPaschal/spirit</span></div>
             <div><span className="text-muted">$</span> <span className="text-lime">cd</span> <span className="text-white">spirit && pnpm install</span></div>
             <div><span className="text-muted">$</span> <span className="text-lime">docker-compose up</span> <span className="text-white">postgres relay -d</span></div>
-            <div><span className="text-muted">$</span> <span className="text-lime">pnpm</span> <span className="text-white">--filter @spirit-protocol/web dev</span></div>
+            <div><span className="text-muted">$</span> <span className="text-lime">pnpm</span> <span className="text-white">--filter @spirit-protocol/demo dev</span></div>
             <div className="text-cyan mt-1">🚀 Spirit running at http://localhost:3001</div>
           </div>
         </div>
