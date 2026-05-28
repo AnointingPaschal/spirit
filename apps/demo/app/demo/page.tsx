@@ -189,6 +189,8 @@ export default function DemoPage() {
   const [session, setSession]     = useState<Session | null>(null);
   const [log, setLog]             = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<'all' | 'evm' | 'solana' | 'bitcoin'>('all');
+  const [showModal, setShowModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const addLog = (msg: string) => setLog((l) => [...l, `[${new Date().toLocaleTimeString()}] ${msg}`]);
 
@@ -313,94 +315,78 @@ export default function DemoPage() {
   const installedCount = wallets.filter(w => w.installed).length;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-bg">
       <Navbar />
-      <main className="flex-1 pt-24 pb-16">
-        <div className="max-w-6xl mx-auto px-6">
-
+      <main className="flex-1 pt-24 pb-16 flex items-center justify-center px-6">
+        <div className="max-w-6xl w-full">
           {/* Header */}
-          <div className="text-center mb-12 stagger">
+          <div className="text-center mb-12">
             <span className="badge bg-cyan/10 text-cyan border border-cyan/20 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse" />
               Live Demo
             </span>
-            <h1 className="font-display font-800 text-4xl md:text-5xl text-white mb-4">
-              Connect your wallet
+            <h1 className="font-display font-800 text-5xl md:text-6xl text-white mb-4">
+              Spirit Protocol
             </h1>
-            <p className="text-ink text-lg max-w-lg mx-auto">
-              Select a wallet below to experience the full Spirit Protocol authentication flow — nonce generation, signing, and verification — right here in your browser.
+            <p className="text-ink text-lg max-w-2xl mx-auto mb-8">
+              Experience the full wallet authentication flow — just like integrating into your app
             </p>
-            {installedCount > 0 && (
-              <div className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full bg-lime/10 border border-lime/20 text-lime text-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-lime animate-pulse" />
-                {installedCount} wallet{installedCount > 1 ? 's' : ''} detected in your browser
+            
+            {/* Main CTA Button */}
+            <button
+              onClick={() => setShowModal(true)}
+              disabled={step !== 'idle' && step !== 'done' && step !== 'error'}
+              className="btn-primary text-lg px-8 py-3 mb-12"
+            >
+              {session ? '✓ Connected' : 'Connect Wallet'}
+            </button>
+
+            {/* Session Info */}
+            {session && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
+                <div className="card p-4 text-left">
+                  <p className="text-xs text-muted font-display uppercase tracking-widest mb-1">Wallet</p>
+                  <p className="text-sm font-mono text-cyan">{session.walletName}</p>
+                </div>
+                <div className="card p-4 text-left">
+                  <p className="text-xs text-muted font-display uppercase tracking-widest mb-1">Chain</p>
+                  <p className="text-sm font-mono text-lime">{session.chainName}</p>
+                </div>
+                <div className="card p-4 text-left">
+                  <p className="text-xs text-muted font-display uppercase tracking-widest mb-1">Address</p>
+                  <p className="text-sm font-mono text-violet">{session.address.slice(0, 8)}…{session.address.slice(-6)}</p>
+                </div>
               </div>
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-            {/* Left — wallet list */}
-            <div className="space-y-4">
-              {/* Filter tabs */}
-              <div className="flex items-center gap-1 p-1 rounded-xl bg-surface border border-[#0F1F35] w-fit">
-                {(['all','evm','solana','bitcoin'] as const).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setSelectedType(t)}
-                    className={`px-4 py-1.5 rounded-lg text-sm font-display font-600 transition-all capitalize ${
-                      selectedType === t
-                        ? 'bg-cyan text-bg'
-                        : 'text-muted hover:text-white'
-                    }`}
-                  >
-                    {t === 'all' ? 'All' : t.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-
-              {/* Wallet grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {filtered.map((wallet) => (
-                  <WalletCard
-                    key={wallet.id}
-                    wallet={wallet}
-                    disabled={step !== 'idle' && step !== 'done' && step !== 'error'}
-                    onConnect={() => void handleConnect(wallet)}
-                  />
-                ))}
-              </div>
+          {/* Modal Overlay */}
+          {showModal && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <WalletModal
+                wallets={wallets}
+                selectedType={selectedType}
+                setSelectedType={setSelectedType}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                onConnect={async (wallet) => {
+                  setShowModal(false);
+                  await handleConnect(wallet);
+                }}
+                onClose={() => setShowModal(false)}
+              />
             </div>
+          )}
 
-            {/* Right — status panel */}
-            <div className="space-y-4">
+          {/* Status Display */}
+          {step !== 'idle' && (
+            <div className="max-w-2xl mx-auto">
               {/* Step bar */}
-              {step !== 'idle' && <StepBar current={step} />}
-
-              {/* Idle state */}
-              {step === 'idle' && (
-                <div className="card p-6 text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-cyan/10 border border-cyan/20 flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-7 h-7 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                  </div>
-                  <h3 className="font-display font-700 text-white mb-2">Ready to connect</h3>
-                  <p className="text-sm text-muted">Select a wallet on the left to start the authentication flow.</p>
-                  <div className="mt-4 p-3 rounded-xl bg-bg border border-[#0F1F35] text-left space-y-1.5">
-                    {['Detect wallet provider','Request accounts','Generate nonce','Sign message','Verify signature','Issue JWT session'].map((s, i) => (
-                      <div key={s} className="flex items-center gap-2 text-xs text-muted">
-                        <span className="w-4 h-4 rounded-full bg-[#0F1F35] flex items-center justify-center text-[10px] flex-shrink-0">{i+1}</span>
-                        {s}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {step !== 'done' && step !== 'error' && <StepBar current={step} />}
 
               {/* In progress */}
               {(step === 'detecting' || step === 'connecting' || step === 'signing' || step === 'verifying') && (
-                <div className="card p-6">
+                <div className="card p-6 border border-cyan/20">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-full border-2 border-cyan border-t-transparent animate-spin" />
                     <span className="font-display font-600 text-white capitalize">{step}…</span>
@@ -418,7 +404,7 @@ export default function DemoPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
                       </svg>
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="font-display font-600 text-red-400 mb-1">Connection failed</p>
                       <p className="text-xs text-muted">{error}</p>
                     </div>
@@ -430,14 +416,13 @@ export default function DemoPage() {
 
               {/* Session */}
               {step === 'done' && session && (
-                <div className="card p-6 border-lime/20 animate-[slide-up_0.4s_ease-out]">
-                  <div className="flex items-center gap-2 mb-5">
+                <div className="card p-6 border-lime/20">
+                  <div className="flex items-center gap-2 mb-6">
                     <div className="w-2 h-2 rounded-full bg-lime animate-pulse" />
                     <span className="font-display font-700 text-lime text-sm uppercase tracking-wider">Authenticated</span>
-                    <span className="ml-auto text-xs text-muted">{session.verifiedAt}</span>
                   </div>
 
-                  <div className="space-y-3 mb-4">
+                  <div className="space-y-3 mb-6">
                     <Field label="Wallet" value={session.walletName} />
                     <Field label="Chain" value={`${session.chainName} (${session.chainType})`} />
                     <Field label="Address" value={`${session.address.slice(0,10)}…${session.address.slice(-6)}`} mono />
@@ -471,16 +456,8 @@ export default function DemoPage() {
                   </button>
                 </div>
               )}
-
-              {/* Log (non-idle) */}
-              {step !== 'idle' && step !== 'detecting' && step !== 'connecting' && step !== 'signing' && step !== 'verifying' && (
-                <div className="card p-4">
-                  <p className="text-xs text-muted font-display uppercase tracking-widest mb-2">Activity log</p>
-                  <Terminal lines={log} />
-                </div>
-              )}
             </div>
-          </div>
+          )}
         </div>
       </main>
       <Footer />
@@ -489,6 +466,131 @@ export default function DemoPage() {
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
+
+interface WalletModalProps {
+  wallets: DetectedWallet[];
+  selectedType: 'all' | 'evm' | 'solana' | 'bitcoin';
+  setSelectedType: (t: 'all' | 'evm' | 'solana' | 'bitcoin') => void;
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+  onConnect: (wallet: DetectedWallet) => Promise<void>;
+  onClose: () => void;
+}
+
+function WalletModal({ wallets, selectedType, setSelectedType, searchQuery, setSearchQuery, onConnect, onClose }: WalletModalProps) {
+  const filtered = wallets.filter(w => {
+    const matchType = selectedType === 'all' || w.type === selectedType;
+    const matchSearch = w.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchType && matchSearch;
+  });
+
+  const installedCount = wallets.filter(w => w.installed).length;
+
+  return (
+    <div className="bg-surface rounded-2xl border border-[#0F1F35] w-full max-w-md shadow-2xl max-h-[90vh] overflow-hidden flex flex-col animate-[slide-up_0.3s_ease-out]">
+      {/* Header */}
+      <div className="px-6 pt-6 pb-4 border-b border-[#0F1F35]">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-display font-700 text-white">Connect Wallet</h2>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-[#0F1F35] rounded-lg transition-colors"
+          >
+            <svg className="w-5 h-5 text-muted hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search wallets..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-bg border border-[#0F1F35] rounded-xl text-sm text-white placeholder-muted focus:outline-none focus:border-cyan/50 transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="px-6 pt-4 border-b border-[#0F1F35] flex items-center gap-1">
+        {(['all','evm','solana','bitcoin'] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setSelectedType(t)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-display font-600 transition-all capitalize ${
+              selectedType === t
+                ? 'bg-cyan text-bg'
+                : 'text-muted hover:text-white'
+            }`}
+          >
+            {t === 'all' ? 'All' : t}
+          </button>
+        ))}
+      </div>
+
+      {/* Wallet List */}
+      <div className="flex-1 overflow-y-auto">
+        {filtered.length === 0 ? (
+          <div className="p-6 text-center">
+            <p className="text-sm text-muted">No wallets found</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-[#0F1F35]">
+            {filtered.map((wallet) => (
+              <button
+                key={wallet.id}
+                onClick={() => {
+                  if (wallet.installed) {
+                    void onConnect(wallet);
+                  } else {
+                    window.open(wallet.downloadUrl, '_blank');
+                  }
+                }}
+                className="w-full px-6 py-4 flex items-center gap-3 hover:bg-bg/50 transition-colors text-left"
+              >
+                <span className="text-3xl flex-shrink-0">{wallet.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-display font-600 text-white">{wallet.name}</p>
+                  <p className="text-xs text-muted capitalize">{wallet.type}</p>
+                </div>
+                {wallet.installed ? (
+                  <div className="flex-shrink-0 flex items-center gap-2">
+                    <span className="text-xs bg-lime/10 text-lime border border-lime/20 px-2 py-0.5 rounded-full">
+                      Ready
+                    </span>
+                    <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="text-xs text-muted border border-[#0F1F35] px-3 py-1 rounded-full">
+                    Install
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="px-6 py-4 border-t border-[#0F1F35] bg-bg/50">
+        <p className="text-xs text-muted text-center">
+          {installedCount === 0 
+            ? 'No wallets detected. Install one to get started.'
+            : `${installedCount} wallet${installedCount > 1 ? 's' : ''} detected`
+          }
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function WalletCard({ wallet, disabled, onConnect }: { wallet: DetectedWallet; disabled: boolean; onConnect: () => void }) {
   const typeColor = wallet.type === 'evm' ? 'text-cyan' : wallet.type === 'solana' ? 'text-violet' : 'text-lime';
